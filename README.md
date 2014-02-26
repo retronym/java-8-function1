@@ -64,6 +64,14 @@ signature. This is safe as the class is anonymous and only ever
 called through invoke-interface, so no harm done. Seems like a leaner
 representation.
 
+So, to emit only the generic `java.lang.Object $anonfun$1.apply(java.lang.Object)` version,
+we inline `java.lang.String $anonfun$1.apply(java.lang.String)` into it,
+so that, what ordinarly would be the bridge method, has the closure's body,
+with a prelude to do the unboxing.
+
+To call this `apply` method we emit `invoke-interface Object runtime.F1(Object)`.
+(This is very close to what we currently do, except that we use Function1 as the target.)
+
 Furthermore, by *only* creating the generic signature for anonymous functions,
 we would avoid the rather brutal limitation imposed by erasure for value classes, [SI-6260](https://issues.scala-lang.org/browse/SI-6260).
 
